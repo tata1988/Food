@@ -284,7 +284,7 @@ window.addEventListener('DOMContentLoaded', function () {
                     showThanksModal(message.failure);
                 }).finally(() => {
                     form.reset();
-                })
+                });
 
             /* request.addEventListener('load', () => {
                 if (request.status === 200) {
@@ -322,6 +322,10 @@ window.addEventListener('DOMContentLoaded', function () {
             closeModal();
         }, 4000);
     }
+
+    fetch('http://localhost:3000/menu')
+    .then(data => data.json())
+    .then(res => console.log(res));
 
 
 });
