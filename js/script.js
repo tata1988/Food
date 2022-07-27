@@ -196,75 +196,59 @@ window.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    const getResource = async (url) => {
-        const res = await fetch(url);
-
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-        }
-        return await res.json();
-    };
-
-    getResource('http://localhost:3000/menu').then(data => {
-        data.forEach(({ img, altimg, title, descr, price }) => {
-            new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+    getResource('http://localhost:3000/menu')
+        .then(data => {
+            data.forEach(({ img, altimg, title, descr, price }) => {
+                new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
+            });
         });
-    });
-
-    // getResource('http://localhost:3000/menu')
-    //     .then(data => createCard(data));
-
-    // function createCard(data) {
-    //     data.forEach(({img, altimg, title, descr, price}) => {
-    //         const element = document.createElement('div');
-
-    //         element.classList.add("menu__item");
-
-    //         element.innerHTML = `
-    //             <img src=${img} alt=${altimg}>
-    //             <h3 class="menu__item-subtitle">${title}</h3>
-    //             <div class="menu__item-descr">${descr}</div>
-    //             <div class="menu__item-divider"></div>
-    //             <div class="menu__item-price">
-    //                 <div class="menu__item-cost">Цена:</div>
-    //                 <div class="menu__item-total"><span>${price}</span> грн/день</div>
-    //             </div>
-    //         `;
-    //         document.querySelector(".menu .container").append(element);
-    //     });
-    // }
-
 
     // Forms
 
     const forms = document.querySelectorAll('form');
-
     const message = {
         loading: 'img/form/spinner.svg',
-        success: 'Спасибо! мы с вами свяжемся',
+        success: 'Спасибо! Скоро мы с вами свяжемся',
         failure: 'Что-то пошло не так...'
-
     };
 
     forms.forEach(item => {
         bindPostData(item);
     });
 
+    const postData = async (url, data) => {
+        let res = await fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        });
+
+        return await res.json();
+    };
+
+    async function getResource(url) {
+        let res = await fetch(url);
+
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+        }
+
+        return await res.json();
+    }
+
     function bindPostData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const statusMessage = document.createElement('img');
+            let statusMessage = document.createElement('img');
             statusMessage.src = message.loading;
             statusMessage.style.cssText = `
-            display: block;
-            margin: 0 auto;
+                display: block;
+                margin: 0 auto;
             `;
             form.insertAdjacentElement('afterend', statusMessage);
-
-            /* const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
- */
 
             const formData = new FormData(form);
 
@@ -280,7 +264,6 @@ window.addEventListener('DOMContentLoaded', function () {
                 }).finally(() => {
                     form.reset();
                 });
-
         });
     }
 
@@ -293,12 +276,11 @@ window.addEventListener('DOMContentLoaded', function () {
         const thanksModal = document.createElement('div');
         thanksModal.classList.add('modal__dialog');
         thanksModal.innerHTML = `
-        <div class="modal__content">
-        <div data-close class="modal__close">&times;</div>
-        <div class="modal__title">${message}</div>
-        </div>
+            <div class="modal__content">
+                <div class="modal__close" data-close>×</div>
+                <div class="modal__title">${message}</div>
+            </div>
         `;
-
         document.querySelector('.modal').append(thanksModal);
         setTimeout(() => {
             thanksModal.remove();
@@ -307,8 +289,4 @@ window.addEventListener('DOMContentLoaded', function () {
             closeModal();
         }, 4000);
     }
-
-    fetch('http://localhost:3000/menu')
-        .then(data => data.json())
-        .then(res => console.log(res));
 });
