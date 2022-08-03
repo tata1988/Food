@@ -117,7 +117,7 @@ a {
     position: fixed;
     left: 60px;
     top: 240px;
-    height: 400px;
+    height: 350px;
     width: 25px;
     display: flex;
     flex-direction: column;
@@ -138,7 +138,7 @@ a {
 
 .sidepanel__divider {
     width: 1px;
-    height: 165px;
+    height: 135px;
     background-color: #000
 }
 
